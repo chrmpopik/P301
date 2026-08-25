@@ -17,6 +17,10 @@ Hearty Organics is a health-focused grocery retailer looking to improve how its 
 – Main Dashboard Sections:
     – Inventory Health: Low stock items, Overstocked products, Days of supply remaining, Reorder recommendations
     – Sales Performance: Sales trends over time, Top-selling products, Revenue by subcategory, Sales growth/decline indicators
+    – Trend Opportunities:
+        – Left Card: Fastest Growing Products (Top 5 products by sales growth, Growth % vs previous period)
+        – Center Card: Trend vs. Inventory Risk (Growth rate, Days of supply, Inventory health indicator)
+        – Right Card: Seasonal Demand Signals (Upcoming events, Expected demand impact, Recommended preparation actions)
     – Profitability: Margin by product, Most profitable brands, Low-margin products needing review
     – Vendor Performance: Fill rate %, On-time delivery %, Backorders, Lead times by vendor
 – Daily Action Center: section at the top that surfaces the 3-5 most urgent items requiring the buyer's attention that day.
