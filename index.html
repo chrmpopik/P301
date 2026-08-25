@@ -61,13 +61,13 @@
 	<header class="topbar"><div class="brand"><div class="brand-mark">✦</div> hearty organics</div><div class="top-right"><div class="refresh"><i class="mdi mdi-sync"></i> Updated today, 6:00 AM</div><div class="avatar">JM</div></div></header>
 	<main class="page">
 		<div class="heading"><div><div class="eyebrow">Category intelligence / Frozen foods</div><h1>Good morning, Jamie.</h1><p>Here’s what needs your attention across the category today.</p></div><div class="date-note"><i class="mdi mdi-calendar-blank-outline"></i> Aug 24, 2026 <span>·</span> Daily view</div></div>
-		<div class="filters"><span class="filter-label">View by</span><select class="filter date" v-model="filters.range"><option>Last 30 days</option><option>Last 90 days</option><option>Year to date</option></select><select class="filter" v-model="filters.store"><option>All stores</option><option>Northside Market</option><option>Riverside Market</option><option>Hillcrest Market</option></select><select class="filter" v-model="filters.vendor"><option>All vendors</option><option>Green Valley Foods</option><option>Pure Harvest Co.</option><option>Nature's Best</option></select><select class="filter category" v-model="filters.category"><option>Frozen Foods</option><option>Frozen Meals</option><option>Frozen Produce</option><option>Frozen Desserts</option></select></div>
-		<div class="kpis"><div class="kpi"><div class="kpi-label">TOTAL SALES</div><div class="kpi-value">$284.6k</div><div class="kpi-sub">↗ 8.4% vs last period</div></div><div class="kpi"><div class="kpi-label">GROSS MARGIN</div><div class="kpi-value">34.8%</div><div class="kpi-sub">↗ 1.2 pts vs last period</div></div><div class="kpi"><div class="kpi-label">INVENTORY VALUE</div><div class="kpi-value">$196.2k</div><div class="kpi-sub warn">↓ 4.1% vs last period</div></div><div class="kpi"><div class="kpi-label">STOCKOUT RISKS</div><div class="kpi-value">12 <small style="font:500 11px 'DM Sans';color:#71847e">items</small></div><div class="kpi-sub warn">5 critical · needs action</div></div><div class="kpi"><div class="kpi-label">TOP SELLING PRODUCT</div><div class="kpi-value" style="font-size:17px;margin-top:15px">Berry Blast Smoothie</div><div class="kpi-sub">$18.4k revenue · ↗ 22%</div></div></div>
+		<div class="filters"><span class="filter-label">View by</span><select class="filter date" v-model="filters.range"><option>Last 30 days</option><option>Last 90 days</option><option>Year to date</option></select><select class="filter" v-model="filters.store"><option>All stores</option><option>Northside Market</option><option>Riverside Market</option><option>Hillcrest Market</option><option>Lakeside Market</option></select><select class="filter" v-model="filters.vendor"><option>All vendors</option><option>Green Valley Foods</option><option>Pure Harvest Co.</option><option>Nature's Best</option><option>Daily Harvest</option></select><select class="filter category" v-model="filters.category"><option>Frozen Foods</option><option>Frozen Meals</option><option>Frozen Produce</option><option>Frozen Desserts</option></select></div>
+		<div class="kpis"><div class="kpi"><div class="kpi-label">TOTAL SALES</div><div class="kpi-value">{{kpis.totalSales}}</div><div class="kpi-sub">{{kpis.salesDelta}}</div></div><div class="kpi"><div class="kpi-label">GROSS MARGIN</div><div class="kpi-value">{{kpis.margin}}</div><div class="kpi-sub">{{kpis.marginDelta}}</div></div><div class="kpi"><div class="kpi-label">INVENTORY VALUE</div><div class="kpi-value">{{kpis.inventoryValue}}</div><div class="kpi-sub" :class="{warn:kpis.inventoryDelta.startsWith('↓')}">{{kpis.inventoryDelta}}</div></div><div class="kpi"><div class="kpi-label">STOCKOUT RISKS</div><div class="kpi-value">{{kpis.stockoutCount}} <small style="font:500 11px 'DM Sans';color:#71847e">items</small></div><div class="kpi-sub warn">{{kpis.criticalCount}} critical · needs action</div></div><div class="kpi"><div class="kpi-label">TOP SELLING PRODUCT</div><div class="kpi-value" style="font-size:17px;margin-top:15px">{{kpis.topProduct}}</div><div class="kpi-sub">{{kpis.topProductMeta}}</div></div></div>
 		<section class="action"><div><h2>Daily action center</h2><div class="action-intro">Three items are worth your attention before the next order cycle.</div></div><div class="actions"><div class="action-item" @click="openDrawer('stockout')"><i class="mdi mdi-alert-circle-outline"></i><div><strong>5 critical stockout risks</strong><span>Reorder within 48 hours</span></div></div><div class="action-item" @click="openDrawer('sales')"><i class="mdi mdi-trending-down"></i><div><strong>Sales dipped in Desserts</strong><span>Down 11% week over week</span></div></div><div class="action-item" @click="openDrawer('vendor')"><i class="mdi mdi-truck-fast-outline"></i><div><strong>Pure Harvest is late</strong><span>3 POs past expected date</span></div></div></div></section>
-		<div class="section-title"><h2>Inventory health</h2><span>342 active SKUs · 4 stores</span></div>
+		<div class="section-title"><h2>Inventory health</h2><span>{{inventorySummary}}</span></div>
 		<div class="grid-2"><div class="panel table-panel"><div class="table-head panel-head"><div><h3>Reorder recommendations</h3><p>Items approaching their reorder threshold</p></div><span class="more" @click="openDrawer('inventory')">View all →</span></div><table><thead><tr><th>Product</th><th>On hand</th><th>Days left</th><th>Action</th></tr></thead><tbody><tr v-for="item in reorderItems" :key="item.name" @click="openProduct(item)"><td><strong>{{item.name}}</strong><small style="display:block;color:#71847e;font-size:9px;margin-top:3px">{{item.brand}}</small></td><td>{{item.stock}} units</td><td><span class="status critical">{{item.days}} days</span></td><td><span class="more">Order now</span></td></tr></tbody></table></div><div class="panel"><div class="panel-head"><div><h3>Days of supply</h3><p>Current cover by inventory status</p></div><i class="mdi mdi-information-outline" style="color:#a6b8b1"></i></div><div class="bar-row" v-for="bar in supplyBars" :key="bar.label"><div class="bar-meta"><span>{{bar.label}}</span><span>{{bar.value}} days</span></div><div class="track"><div class="fill" :class="{light:bar.label==='Healthy'}" :style="{width:bar.width+'%'}"></div></div></div><div style="display:flex;gap:18px;color:#71847e;font-size:10px;margin-top:22px"><span><b style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#d86d5e;margin-right:5px"></b>Low stock: 12</span><span><b style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#9acdb6;margin-right:5px"></b>Overstock: 28</span></div></div></div>
-		<div class="section-title"><h2>Sales performance</h2><span>Revenue · units · growth</span></div>
-		<div class="grid-2"><div class="panel"><div class="panel-head"><div><h3>Revenue trend</h3><p>Monthly category revenue, Jan–Aug 2026</p></div><div class="legend"><span><b></b>Revenue</span><span><b class="alt"></b>Target</span></div></div><div class="chart-wrap"><canvas id="salesChart"></canvas></div></div><div class="panel"><div class="panel-head"><div><h3>Top-selling products</h3><p>Revenue this period</p></div><span class="more" @click="openDrawer('products')">Explore →</span></div><div class="product-row" v-for="(product,index) in products" :key="product.name" @click="openProduct(product)"><div class="product-icon">{{product.icon}}</div><div class="name"><strong>{{index+1}}. {{product.name}}</strong><small>{{product.subcategory}}</small></div><div class="sales">${{product.revenue}}k<br><span :class="product.trend > 0 ? 'trend-up':'trend-down'">{{product.trend > 0 ? '↗':'↘'}} {{Math.abs(product.trend)}}%</span></div></div></div></div>
+		<div class="section-title"><h2>Sales performance</h2><span>{{salesSummary}}</span></div>
+		<div class="grid-2"><div class="panel"><div class="panel-head"><div><h3>Revenue trend</h3><p>Monthly category revenue, Jan–Aug 2026</p></div><div class="legend"><span><b></b>Revenue</span><span><b class="alt"></b>Target</span></div></div><div class="chart-wrap"><canvas id="salesChart"></canvas></div></div><div class="panel"><div class="panel-head"><div><h3>Top-selling products</h3><p>Revenue this period</p></div><span class="more" @click="openDrawer('products')">Explore →</span></div><div class="product-row" v-for="(product,index) in products" :key="product.name + '-' + product.subcategory" @click="openProduct(product)"><div class="product-icon">{{product.icon}}</div><div class="name"><strong>{{index+1}}. {{product.name}}</strong><small>{{product.subcategory}}</small></div><div class="sales">${{product.revenue}}k<br><span :class="product.trend > 0 ? 'trend-up':'trend-down'">{{product.trend > 0 ? '↗':'↘'}} {{Math.abs(product.trend)}}%</span></div></div></div></div>
 		<div class="section-title"><h2>Profitability</h2><span>Margin opportunity by brand and product</span></div>
 		<div class="grid-3"><div class="panel"><div class="panel-head"><div><h3>Margin by product</h3><p>Gross margin percentage</p></div></div><div class="chart-wrap" style="height:175px"><canvas id="marginChart"></canvas></div></div><div class="panel"><div class="panel-head"><div><h3>Most profitable brands</h3><p>Weighted average margin</p></div></div><div class="bar-row" v-for="brand in brands" :key="brand.name"><div class="bar-meta"><span>{{brand.name}}</span><span>{{brand.margin}}%</span></div><div class="track"><div class="fill" :style="{width:brand.margin*2.5+'%'}"></div></div></div></div><div class="panel"><div class="panel-head"><div><h3>Needs review</h3><p>Below 25% margin</p></div><span class="status critical">4 items</span></div><div class="product-row" v-for="product in lowMargin" :key="product.name"><div class="product-icon" style="background:#fff3ed">{{product.icon}}</div><div class="name"><strong>{{product.name}}</strong><small>{{product.brand}}</small></div><div class="sales" style="color:#d86d5e">{{product.margin}}%</div></div></div></div>
 		<div class="section-title"><h2>Vendor performance</h2><span>Purchase order health · last 90 days</span></div>
@@ -78,19 +78,190 @@
 <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
-const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, onMounted, watch } = Vue;
 createApp({ setup() {
 	const filters=ref({range:'Last 30 days',store:'All stores',vendor:'All vendors',category:'Frozen Foods'}); const drawer=ref(''); const selected=ref(null);
-	const reorderItems=[{name:'Berry Blast Smoothie',brand:'Daily Harvest',stock:42,days:2},{name:'Cauliflower Crust Pizza',brand:'Green Valley Foods',stock:28,days:3},{name:'Wild Blueberry Bowl',brand:'Pure Harvest Co.',stock:36,days:4}];
-	const supplyBars=[{label:'Critical',value:3,width:17},{label:'Watch',value:8,width:40},{label:'Healthy',value:21,width:100}];
-	const products=[{name:'Berry Blast Smoothie',subcategory:'Smoothies',revenue:'18.4',trend:22,icon:'🫐'},{name:'Organic Cauliflower Pizza',subcategory:'Frozen meals',revenue:'16.8',trend:11,icon:'🥦'},{name:'Mango Medley',subcategory:'Frozen fruit',revenue:'14.2',trend:8,icon:'🥭'},{name:'Garden Veggie Bowl',subcategory:'Frozen meals',revenue:'12.7',trend:-4,icon:'🥕'}];
-	const brands=[{name:'Daily Harvest',margin:42},{name:'Green Valley Foods',margin:38},{name:'Nature’s Best',margin:34},{name:'Pure Harvest Co.',margin:29}];
-	const lowMargin=[{name:'Creamy Mac & Greens',brand:'Pure Harvest Co.',margin:21,icon:'🍃'},{name:'Cheese Ravioli',brand:'Nature’s Best',margin:23,icon:'🧀'},{name:'Chocolate Oat Bites',brand:'Green Valley Foods',margin:24,icon:'🍫'}];
-	const vendors=[{name:'Green Valley Foods',orders:48,fill:98,ontime:96,backorders:0,lead:4},{name:'Daily Harvest',orders:35,fill:96,ontime:93,backorders:1,lead:5},{name:'Pure Harvest Co.',orders:41,fill:89,ontime:82,backorders:3,lead:8}];
+	const months=['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08'];
+	const stores=['Northside Market','Riverside Market','Hillcrest Market','Lakeside Market'];
+	const storeFactors={'Northside Market':1.08,'Riverside Market':1.02,'Hillcrest Market':0.94,'Lakeside Market':0.88};
+	const catalog=[
+		{name:'Berry Blast Smoothie',brand:'Daily Harvest',vendor:'Daily Harvest',category:'Frozen Produce',subcategory:'Smoothies',icon:'🫐',baseRevenue:6200,costRatio:.57,baseOnHand:68,reorderThreshold:80},
+		{name:'Organic Cauliflower Pizza',brand:'Green Valley Foods',vendor:'Green Valley Foods',category:'Frozen Meals',subcategory:'Frozen Meals',icon:'🥦',baseRevenue:5800,costRatio:.61,baseOnHand:52,reorderThreshold:65},
+		{name:'Mango Medley',brand:"Nature's Best",vendor:"Nature's Best",category:'Frozen Produce',subcategory:'Frozen Fruit',icon:'🥭',baseRevenue:5100,costRatio:.64,baseOnHand:86,reorderThreshold:70},
+		{name:'Garden Veggie Bowl',brand:'Green Valley Foods',vendor:'Green Valley Foods',category:'Frozen Meals',subcategory:'Bowls',icon:'🥕',baseRevenue:4700,costRatio:.66,baseOnHand:58,reorderThreshold:72},
+		{name:'Vanilla Bean Mochi',brand:'Pure Harvest Co.',vendor:'Pure Harvest Co.',category:'Frozen Desserts',subcategory:'Frozen Desserts',icon:'🍨',baseRevenue:4300,costRatio:.75,baseOnHand:44,reorderThreshold:62},
+		{name:'Chocolate Oat Bites',brand:'Pure Harvest Co.',vendor:'Pure Harvest Co.',category:'Frozen Desserts',subcategory:'Frozen Desserts',icon:'🍫',baseRevenue:3800,costRatio:.77,baseOnHand:39,reorderThreshold:58}
+	];
+	const vendorBenchmarks={
+		'Green Valley Foods':{fill:98,ontime:96,backorders:0,lead:4},
+		'Daily Harvest':{fill:96,ontime:93,backorders:1,lead:5},
+		'Pure Harvest Co.':{fill:89,ontime:82,backorders:3,lead:8},
+		"Nature's Best":{fill:94,ontime:90,backorders:1,lead:6}
+	};
+	const records=months.flatMap((month, monthIndex)=>stores.flatMap((store, storeIndex)=>catalog.map((product, productIndex)=>{
+		const seasonality=0.86 + (monthIndex * 0.05) + ((productIndex % 3) * 0.015);
+		const storeFactor=storeFactors[store] || 1;
+		const pulse=1 + (((monthIndex + storeIndex + productIndex) % 4) * 0.02);
+		const revenue=Math.round(product.baseRevenue * seasonality * storeFactor * pulse);
+		const units=Math.max(120, Math.round(revenue / 8.2));
+		const cost=Math.round(revenue * product.costRatio);
+		const onHand=Math.max(10, Math.round((product.baseOnHand * (1.1 - monthIndex * 0.04) * (1.03 - storeIndex * 0.06)) - ((productIndex % 2) * 4)));
+		return { ...product, month, store, revenue, units, cost, onHand };
+	})));
+	const monthsInRange=computed(()=>filters.value.range==='Last 30 days' ? ['2026-08'] : (filters.value.range==='Last 90 days' ? ['2026-06','2026-07','2026-08'] : months));
+	function categoryMatch(row, selectedCategory){
+		if(selectedCategory==='Frozen Foods') return true;
+		if(selectedCategory==='Frozen Meals') return row.category==='Frozen Meals';
+		if(selectedCategory==='Frozen Produce') return row.category==='Frozen Produce';
+		if(selectedCategory==='Frozen Desserts') return row.category==='Frozen Desserts';
+		return true;
+	}
+	const filteredRecords=computed(()=>records.filter(row=>{
+		const inRange=monthsInRange.value.includes(row.month);
+		const storeOk=filters.value.store==='All stores' || row.store===filters.value.store;
+		const vendorOk=filters.value.vendor==='All vendors' || row.vendor===filters.value.vendor;
+		const categoryOk=categoryMatch(row, filters.value.category);
+		return inRange && storeOk && vendorOk && categoryOk;
+	}));
+	const priorRecords=computed(()=>{
+		const priorMonths=filters.value.range==='Last 30 days' ? ['2026-07'] : (filters.value.range==='Last 90 days' ? ['2026-03','2026-04','2026-05'] : ['2025-09']);
+		return records.filter(row=>priorMonths.includes(row.month) && (filters.value.store==='All stores' || row.store===filters.value.store) && (filters.value.vendor==='All vendors' || row.vendor===filters.value.vendor) && categoryMatch(row, filters.value.category));
+	});
+	const latestMonth=computed(()=>filteredRecords.value.length ? filteredRecords.value[filteredRecords.value.length-1].month : '2026-08');
+	const latestRecords=computed(()=>filteredRecords.value.filter(row=>row.month===latestMonth.value));
+	function sum(arr, key){ return arr.reduce((acc, row)=>acc + (row[key] || 0), 0); }
+	function toCurrencyK(value){ return `$${(value / 1000).toFixed(1)}k`; }
+	function toPercent(value){ return `${value.toFixed(1)}%`; }
+	function pctDelta(current, previous){
+		if(previous<=0) return '↗ 0.0% vs last period';
+		const delta=((current-previous)/previous)*100;
+		return `${delta>=0?'↗':'↓'} ${Math.abs(delta).toFixed(1)}% vs last period`;
+	}
+	const kpis=computed(()=>{
+		const revenue=sum(filteredRecords.value,'revenue');
+		const cost=sum(filteredRecords.value,'cost');
+		const previousRevenue=sum(priorRecords.value,'revenue');
+		const previousCost=sum(priorRecords.value,'cost');
+		const margin=revenue ? ((revenue-cost)/revenue)*100 : 0;
+		const previousMargin=previousRevenue ? ((previousRevenue-previousCost)/previousRevenue)*100 : margin;
+		const inventoryValue=latestRecords.value.reduce((acc,row)=>acc + ((row.cost / Math.max(row.units,1)) * row.onHand), 0);
+		const critical=latestRecords.value.filter(row=>row.onHand < row.reorderThreshold * 0.4).length;
+		const stockout=latestRecords.value.filter(row=>row.onHand < row.reorderThreshold * 0.55).length;
+		const grouped={};
+		latestRecords.value.forEach(row=>{ grouped[row.name]=(grouped[row.name]||0)+row.revenue; });
+		const topName=Object.keys(grouped).sort((a,b)=>grouped[b]-grouped[a])[0] || 'No products';
+		const topRevenue=grouped[topName] || 0;
+		const prevByProduct={};
+		filteredRecords.value.filter(row=>row.month==='2026-07').forEach(row=>{ prevByProduct[row.name]=(prevByProduct[row.name]||0)+row.revenue; });
+		const topPrev=prevByProduct[topName] || topRevenue;
+		const topTrend=topPrev>0 ? ((topRevenue-topPrev)/topPrev)*100 : 0;
+		const marginDiff=margin-previousMargin;
+		const inventoryDelta=`${inventoryValue>=180000?'↗':'↓'} ${Math.abs(((inventoryValue-180000)/180000)*100).toFixed(1)}% vs baseline`;
+		return {
+			totalSales: toCurrencyK(revenue),
+			salesDelta: pctDelta(revenue, previousRevenue),
+			margin: toPercent(margin),
+			marginDelta: `${marginDiff>=0?'↗':'↓'} ${Math.abs(marginDiff).toFixed(1)} pts vs last period`,
+			inventoryValue: toCurrencyK(inventoryValue),
+			inventoryDelta,
+			stockoutCount: stockout,
+			criticalCount: critical,
+			topProduct: topName,
+			topProductMeta: `${toCurrencyK(topRevenue)} revenue · ${topTrend>=0?'↗':'↘'} ${Math.abs(topTrend).toFixed(0)}%`
+		};
+	});
+	const inventorySummary=computed(()=>{
+		const skuCount=new Set(latestRecords.value.map(row=>row.name)).size;
+		const storesCount=new Set(latestRecords.value.map(row=>row.store)).size;
+		return `${skuCount} active SKUs · ${storesCount} stores`;
+	});
+	const salesSummary=computed(()=>`${filters.value.range} · revenue · units · growth`);
+	const reorderItems=computed(()=>latestRecords.value.filter(row=>row.onHand < row.reorderThreshold).map(row=>{
+		const dailyUse=Math.max(1, row.units/30);
+		return {name:row.name,brand:row.brand,stock:row.onHand,days:Math.max(1,Math.round(row.onHand/dailyUse))};
+	}).sort((a,b)=>a.days-b.days).slice(0,6));
+	const supplyBars=computed(()=>{
+		const days=latestRecords.value.map(row=>Math.max(1,Math.round(row.onHand/Math.max(1,row.units/30))));
+		const critical=days.filter(v=>v<=4);
+		const watch=days.filter(v=>v>4&&v<=10);
+		const healthy=days.filter(v=>v>10);
+		const max=Math.max(1,...days);
+		return [
+			{label:'Critical',value:critical.length?Math.round(critical.reduce((a,b)=>a+b,0)/critical.length):0,width:critical.length?Math.max(10,(Math.round((Math.max(...critical)/max)*100))):10},
+			{label:'Watch',value:watch.length?Math.round(watch.reduce((a,b)=>a+b,0)/watch.length):0,width:watch.length?Math.max(18,(Math.round((Math.max(...watch)/max)*100))):18},
+			{label:'Healthy',value:healthy.length?Math.round(healthy.reduce((a,b)=>a+b,0)/healthy.length):0,width:100}
+		];
+	});
+	const products=computed(()=>{
+		const latestByName={};
+		latestRecords.value.forEach(row=>{
+			if(!latestByName[row.name]) latestByName[row.name]={name:row.name,subcategory:row.subcategory,revenue:0,icon:row.icon};
+			latestByName[row.name].revenue+=row.revenue;
+		});
+		const priorByName={};
+		filteredRecords.value.filter(row=>row.month==='2026-07').forEach(row=>{ priorByName[row.name]=(priorByName[row.name]||0)+row.revenue; });
+		return Object.values(latestByName).map(item=>{
+			const prev=priorByName[item.name] || item.revenue;
+			const trend=prev>0 ? ((item.revenue-prev)/prev)*100 : 0;
+			return {...item,revenue:(item.revenue/1000).toFixed(1),trend:Math.round(trend)};
+		}).sort((a,b)=>parseFloat(b.revenue)-parseFloat(a.revenue)).slice(0,4);
+	});
+	const brands=computed(()=>{
+		const byBrand={};
+		filteredRecords.value.forEach(row=>{
+			if(!byBrand[row.brand]) byBrand[row.brand]={revenue:0,cost:0};
+			byBrand[row.brand].revenue+=row.revenue;
+			byBrand[row.brand].cost+=row.cost;
+		});
+		return Object.entries(byBrand).map(([name,vals])=>({name,margin:vals.revenue?Math.round(((vals.revenue-vals.cost)/vals.revenue)*100):0})).sort((a,b)=>b.margin-a.margin);
+	});
+	const lowMargin=computed(()=>{
+		const lows=latestRecords.value.map(row=>({name:row.name,brand:row.brand,margin:Math.round(((row.revenue-row.cost)/Math.max(row.revenue,1))*100),icon:row.icon})).filter(row=>row.margin<25);
+		return lows.slice(0,4);
+	});
+	const vendors=computed(()=>{
+		const byVendor={};
+		filteredRecords.value.forEach(row=>{ byVendor[row.vendor]=(byVendor[row.vendor]||0)+1; });
+		return Object.entries(byVendor).map(([name,orders])=>{
+			const base=vendorBenchmarks[name] || {fill:92,ontime:88,backorders:1,lead:6};
+			return {name,orders,fill:base.fill,ontime:base.ontime,backorders:base.backorders,lead:base.lead};
+		}).sort((a,b)=>a.name.localeCompare(b.name));
+	});
+	const salesSeries=computed(()=>{
+		const byMonth={};
+		months.forEach(month=>{ byMonth[month]=0; });
+		filteredRecords.value.forEach(row=>{ byMonth[row.month]+=row.revenue; });
+		const labels=months.map(month=>month.slice(5));
+		const revenue=months.map(month=>Math.round(byMonth[month]/1000));
+		const target=revenue.map(v=>Math.round(v*0.96));
+		return {labels,revenue,target};
+	});
+	const marginSeries=computed(()=>products.value.slice(0,5).map(product=>{
+		const rows=latestRecords.value.filter(row=>row.name===product.name);
+		const rev=sum(rows,'revenue');
+		const cost=sum(rows,'cost');
+		return {label:product.name.split(' ')[0],margin:rev?Math.round(((rev-cost)/rev)*100):0};
+	}));
+	let salesChartInstance; let marginChartInstance;
+	function refreshCharts(){
+		if(!salesChartInstance || !marginChartInstance) return;
+		salesChartInstance.data.labels=salesSeries.value.labels;
+		salesChartInstance.data.datasets[0].data=salesSeries.value.revenue;
+		salesChartInstance.data.datasets[1].data=salesSeries.value.target;
+		salesChartInstance.update();
+		marginChartInstance.data.labels=marginSeries.value.map(item=>item.label);
+		marginChartInstance.data.datasets[0].data=marginSeries.value.map(item=>item.margin);
+		marginChartInstance.update();
+	}
 	const drawerTitle=computed(()=>drawer.value==='stockout'?'Urgent inventory':drawer.value==='sales'?'Sales signal':drawer.value==='vendor'?'Vendor alert':'Category detail'); const drawerHeading=computed(()=>drawer.value==='stockout'?'Stockout risks':'Review the latest category signal');
 	function openDrawer(value){drawer.value=value} function openProduct(product){selected.value=product; drawer.value='product'}
-	onMounted(()=>{ new Chart(document.getElementById('salesChart'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'],datasets:[{data:[28,31,35,33,39,42,40,46],borderColor:'#27836a',backgroundColor:'#dff2e9',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#27836a'},{data:[30,32,34,36,38,40,42,44],borderColor:'#9acdb6',borderDash:[4,4],pointRadius:0,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#eef3f0'},ticks:{callback:v=>'$'+v+'k',font:{size:10},color:'#71847e'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:10},color:'#71847e'},border:{display:false}}}}}); new Chart(document.getElementById('marginChart'),{type:'bar',data:{labels:['Berry','Pizza','Mango','Bowl','Mac'],datasets:[{data:[43,39,36,31,21],backgroundColor:['#27836a','#66a98f','#8fc7b1','#aed8c6','#e9a08f'],borderRadius:3,barThickness:20}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:50,ticks:{callback:v=>v+'%',font:{size:9},color:'#71847e'},grid:{color:'#eef3f0'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:9},color:'#71847e'},border:{display:false}}}}})});
-	return {filters,drawer,selected,reorderItems,supplyBars,products,brands,lowMargin,vendors,drawerTitle,drawerHeading,openDrawer,openProduct};
+	onMounted(()=>{
+		salesChartInstance=new Chart(document.getElementById('salesChart'),{type:'line',data:{labels:salesSeries.value.labels,datasets:[{data:salesSeries.value.revenue,borderColor:'#27836a',backgroundColor:'#dff2e9',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#27836a'},{data:salesSeries.value.target,borderColor:'#9acdb6',borderDash:[4,4],pointRadius:0,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#eef3f0'},ticks:{callback:v=>'$'+v+'k',font:{size:10},color:'#71847e'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:10},color:'#71847e'},border:{display:false}}}}});
+		marginChartInstance=new Chart(document.getElementById('marginChart'),{type:'bar',data:{labels:marginSeries.value.map(item=>item.label),datasets:[{data:marginSeries.value.map(item=>item.margin),backgroundColor:['#27836a','#66a98f','#8fc7b1','#aed8c6','#e9a08f'],borderRadius:3,barThickness:20}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:50,ticks:{callback:v=>v+'%',font:{size:9},color:'#71847e'},grid:{color:'#eef3f0'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:9},color:'#71847e'},border:{display:false}}}}});
+		refreshCharts();
+	});
+	watch(filteredRecords, refreshCharts, {deep:true});
+	return {filters,drawer,selected,reorderItems,supplyBars,products,brands,lowMargin,vendors,drawerTitle,drawerHeading,openDrawer,openProduct,kpis,inventorySummary,salesSummary};
 }}).mount('#app');
 </script>
 </body>

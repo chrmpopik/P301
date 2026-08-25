@@ -1,9 +1,57 @@
 {
-  "metadata": { "category": "Frozen Foods", "currency": "USD", "lastUpdated": "2026-08-24T06:00:00Z", "stores": ["Northside Market", "Riverside Market", "Hillcrest Market", "Lakeside Market"] },
+  "metadata": {
+    "category": "Frozen Foods",
+    "currency": "USD",
+    "lastUpdated": "2026-08-25T06:00:00Z",
+    "stores": [
+      "Northside Market",
+      "Riverside Market",
+      "Hillcrest Market",
+      "Lakeside Market"
+    ]
+  },
   "monthlyPerformance": [
-    {"month":"2026-01","revenue":28000,"units":1840,"cost":18480,"margin":9520}, {"month":"2026-02","revenue":31000,"units":2010,"cost":20150,"margin":10850}, {"month":"2026-03","revenue":35000,"units":2250,"cost":22750,"margin":12250}, {"month":"2026-04","revenue":33000,"units":2150,"cost":21450,"margin":11550}, {"month":"2026-05","revenue":39000,"units":2500,"cost":25350,"margin":13650}, {"month":"2026-06","revenue":42000,"units":2720,"cost":27720,"margin":14280}, {"month":"2026-07","revenue":40000,"units":2640,"cost":26400,"margin":13600}, {"month":"2026-08","revenue":46000,"units":3000,"cost":30360,"margin":15640}
+    { "month": "2026-01", "revenue": 143200, "units": 14340, "cost": 90600, "margin": 52600 },
+    { "month": "2026-02", "revenue": 151400, "units": 14990, "cost": 95480, "margin": 55920 },
+    { "month": "2026-03", "revenue": 163100, "units": 16080, "cost": 102700, "margin": 60400 },
+    { "month": "2026-04", "revenue": 159800, "units": 15610, "cost": 100900, "margin": 58900 },
+    { "month": "2026-05", "revenue": 174600, "units": 17030, "cost": 110400, "margin": 64200 },
+    { "month": "2026-06", "revenue": 182900, "units": 17810, "cost": 115900, "margin": 67000 },
+    { "month": "2026-07", "revenue": 186400, "units": 18250, "cost": 117900, "margin": 68500 },
+    { "month": "2026-08", "revenue": 194300, "units": 18940, "cost": 122200, "margin": 72100 }
   ],
-  "products": [{"sku":"FF-001","name":"Berry Blast Smoothie","brand":"Daily Harvest","category":"Frozen Foods","subcategory":"Smoothies","onHand":42,"reorderThreshold":80,"revenue":18400,"cost":10488,"marginPercent":43,"vendor":"Daily Harvest"},{"sku":"FF-002","name":"Organic Cauliflower Pizza","brand":"Green Valley Foods","category":"Frozen Foods","subcategory":"Frozen Meals","onHand":28,"reorderThreshold":60,"revenue":16800,"cost":10248,"marginPercent":39,"vendor":"Green Valley Foods"},{"sku":"FF-003","name":"Mango Medley","brand":"Nature's Best","category":"Frozen Foods","subcategory":"Frozen Produce","onHand":94,"reorderThreshold":75,"revenue":14200,"cost":9088,"marginPercent":36,"vendor":"Nature's Best"}],
-  "vendorPerformance": [{"vendor":"Green Valley Foods","fillRate":98,"onTimeDelivery":96,"backorders":0,"leadTimeDays":4},{"vendor":"Daily Harvest","fillRate":96,"onTimeDelivery":93,"backorders":1,"leadTimeDays":5},{"vendor":"Pure Harvest Co.","fillRate":89,"onTimeDelivery":82,"backorders":3,"leadTimeDays":8}],
-  "purchaseOrders": [{"po":"PO-260824-01","vendor":"Daily Harvest","status":"Recommended","orderedAt":"2026-08-24","expectedAt":"2026-08-28","items":3},{"po":"PO-260820-14","vendor":"Pure Harvest Co.","status":"Delayed","orderedAt":"2026-08-20","expectedAt":"2026-08-22","items":6}]
+  "products": [
+    { "sku": "FF-001", "name": "Berry Blast Smoothie", "brand": "Daily Harvest", "category": "Frozen Produce", "subcategory": "Smoothies", "onHand": 42, "reorderThreshold": 80, "revenue": 18400, "cost": 10488, "marginPercent": 43, "vendor": "Daily Harvest" },
+    { "sku": "FF-002", "name": "Organic Cauliflower Pizza", "brand": "Green Valley Foods", "category": "Frozen Meals", "subcategory": "Frozen Meals", "onHand": 28, "reorderThreshold": 65, "revenue": 16800, "cost": 10248, "marginPercent": 39, "vendor": "Green Valley Foods" },
+    { "sku": "FF-003", "name": "Mango Medley", "brand": "Nature's Best", "category": "Frozen Produce", "subcategory": "Frozen Fruit", "onHand": 94, "reorderThreshold": 70, "revenue": 14200, "cost": 9088, "marginPercent": 36, "vendor": "Nature's Best" },
+    { "sku": "FF-004", "name": "Garden Veggie Bowl", "brand": "Green Valley Foods", "category": "Frozen Meals", "subcategory": "Bowls", "onHand": 53, "reorderThreshold": 72, "revenue": 12700, "cost": 8382, "marginPercent": 34, "vendor": "Green Valley Foods" },
+    { "sku": "FF-005", "name": "Vanilla Bean Mochi", "brand": "Pure Harvest Co.", "category": "Frozen Desserts", "subcategory": "Frozen Desserts", "onHand": 31, "reorderThreshold": 62, "revenue": 12100, "cost": 9075, "marginPercent": 25, "vendor": "Pure Harvest Co." },
+    { "sku": "FF-006", "name": "Chocolate Oat Bites", "brand": "Pure Harvest Co.", "category": "Frozen Desserts", "subcategory": "Frozen Desserts", "onHand": 24, "reorderThreshold": 58, "revenue": 10900, "cost": 8393, "marginPercent": 23, "vendor": "Pure Harvest Co." }
+  ],
+  "storeProductSnapshots": [
+    { "month": "2026-08", "store": "Northside Market", "sku": "FF-001", "onHand": 39, "units": 990, "revenue": 23600 },
+    { "month": "2026-08", "store": "Northside Market", "sku": "FF-002", "onHand": 26, "units": 860, "revenue": 20600 },
+    { "month": "2026-08", "store": "Northside Market", "sku": "FF-005", "onHand": 19, "units": 780, "revenue": 15900 },
+    { "month": "2026-08", "store": "Riverside Market", "sku": "FF-001", "onHand": 44, "units": 910, "revenue": 22100 },
+    { "month": "2026-08", "store": "Riverside Market", "sku": "FF-003", "onHand": 69, "units": 800, "revenue": 18200 },
+    { "month": "2026-08", "store": "Riverside Market", "sku": "FF-006", "onHand": 22, "units": 700, "revenue": 14600 },
+    { "month": "2026-08", "store": "Hillcrest Market", "sku": "FF-002", "onHand": 24, "units": 750, "revenue": 17300 },
+    { "month": "2026-08", "store": "Hillcrest Market", "sku": "FF-004", "onHand": 41, "units": 690, "revenue": 15100 },
+    { "month": "2026-08", "store": "Hillcrest Market", "sku": "FF-006", "onHand": 20, "units": 620, "revenue": 13200 },
+    { "month": "2026-08", "store": "Lakeside Market", "sku": "FF-001", "onHand": 34, "units": 720, "revenue": 16800 },
+    { "month": "2026-08", "store": "Lakeside Market", "sku": "FF-004", "onHand": 37, "units": 640, "revenue": 13900 },
+    { "month": "2026-08", "store": "Lakeside Market", "sku": "FF-005", "onHand": 17, "units": 600, "revenue": 12500 }
+  ],
+  "vendorPerformance": [
+    { "vendor": "Green Valley Foods", "fillRate": 98, "onTimeDelivery": 96, "backorders": 0, "leadTimeDays": 4 },
+    { "vendor": "Daily Harvest", "fillRate": 96, "onTimeDelivery": 93, "backorders": 1, "leadTimeDays": 5 },
+    { "vendor": "Nature's Best", "fillRate": 94, "onTimeDelivery": 90, "backorders": 1, "leadTimeDays": 6 },
+    { "vendor": "Pure Harvest Co.", "fillRate": 89, "onTimeDelivery": 82, "backorders": 3, "leadTimeDays": 8 }
+  ],
+  "purchaseOrders": [
+    { "po": "PO-260825-03", "vendor": "Green Valley Foods", "status": "Recommended", "orderedAt": "2026-08-25", "expectedAt": "2026-08-29", "items": 5 },
+    { "po": "PO-260824-01", "vendor": "Daily Harvest", "status": "Recommended", "orderedAt": "2026-08-24", "expectedAt": "2026-08-28", "items": 3 },
+    { "po": "PO-260822-09", "vendor": "Nature's Best", "status": "Placed", "orderedAt": "2026-08-22", "expectedAt": "2026-08-27", "items": 4 },
+    { "po": "PO-260820-14", "vendor": "Pure Harvest Co.", "status": "Delayed", "orderedAt": "2026-08-20", "expectedAt": "2026-08-22", "items": 6 }
+  ]
 }
