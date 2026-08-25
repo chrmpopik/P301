@@ -72,6 +72,12 @@
 		.season-item p { margin:0; font-size:10px; color:var(--muted); line-height:1.45; }
 		.season-cta { margin-top:9px; border:0; background:var(--green); color:#fff; padding:7px 10px; border-radius:5px; font:700 10px 'DM Sans'; cursor:pointer; }
 		.season-cta:hover { background:#1f725d; }
+		.drawer-actions { display:flex; gap:8px; margin-top:16px; }
+		.drawer-btn { border:0; padding:10px 14px; border-radius:5px; font:600 11px 'DM Sans'; cursor:pointer; }
+		.drawer-btn.primary { background:#27836a; color:#fff; }
+		.drawer-btn.primary:hover { background:#1f725d; }
+		.drawer-btn.secondary { background:#edf3f0; color:#48605a; border:1px solid #d7e5de; }
+		.drawer-btn.secondary:hover { background:#e6efea; }
 		.more { color:var(--green); font-size:11px; font-weight:700; cursor:pointer; } .drawer { position:fixed; inset:0; background:#18352f33; z-index:10; display:flex; justify-content:flex-end; } .drawer-card { background:#fff; height:100%; width:min(420px,100%); padding:28px; box-shadow:-8px 0 30px #18352f20; animation:slide .25s ease-out; } @keyframes slide { from { transform:translateX(100%); } to { transform:translateX(0); } } .drawer-card h2 { font-size:21px; margin:8px 0 5px; } .close { float:right; border:0; background:transparent; color:var(--muted); font-size:23px; cursor:pointer; }
 		@media(max-width:1000px){ .kpis{grid-template-columns:repeat(3,1fr)} .grid-2,.grid-3{grid-template-columns:1fr} .action{grid-template-columns:1fr}.actions{grid-template-columns:1fr 1fr} }
 		@media(max-width:650px){ .topbar{padding:0 18px}.page{padding:24px 17px 40px}.top-right .refresh{display:none}.heading{display:block}.date-note{margin-top:16px}.filters{flex-wrap:wrap}.filter,.filter.date,.filter.category{flex:1;min-width:130px}.kpis{grid-template-columns:1fr 1fr}.kpi{min-height:112px;padding:14px}.kpi-value{font-size:20px}.actions{grid-template-columns:1fr}.action{padding:16px}.panel{padding:15px} th,td{padding-left:12px;padding-right:12px} .table-panel{overflow-x:auto} table{min-width:580px} }
@@ -96,7 +102,7 @@
 		<div class="section-title"><h2>Vendor performance</h2><span>Purchase order health · last 90 days</span></div>
 		<div class="panel"><div class="vendor" v-for="vendor in vendors" :key="vendor.name"><div class="vendor-name">{{vendor.name}}<small>{{vendor.orders}} purchase orders</small></div><div><div class="metric-label">FILL RATE</div><div class="metric-value good">{{vendor.fill}}%</div></div><div><div class="metric-label">ON-TIME DELIVERY</div><div class="metric-value" :class="{good:vendor.ontime>90}">{{vendor.ontime}}%</div></div><div><div class="metric-label">BACKORDERS</div><div class="metric-value" :class="{good:vendor.backorders===0}">{{vendor.backorders}}</div></div><div><div class="metric-label">LEAD TIME</div><div class="metric-value">{{vendor.lead}} days</div></div></div></div>
 	</main>
-	<div class="drawer" v-if="drawer" @click.self="drawer=''" role="dialog"><aside class="drawer-card"><button class="close" @click="drawer=''" aria-label="Close">×</button><div class="eyebrow">{{drawerTitle}}</div><h2>{{drawerHeading}}</h2><p style="color:#71847e;font-size:12px;line-height:1.6">This focused view is ready for the buyer workflow. Review the latest signal, then move directly into the next order, vendor conversation, or product detail.</p><div class="panel" style="margin-top:24px;background:#f7faf8"><div class="kpi-label">RECOMMENDED NEXT STEP</div><h3 style="font-size:15px;margin:10px 0">Prioritize the 5 critical items</h3><p style="color:#71847e;font-size:11px">Create a purchase order for the items with fewer than 4 days of supply remaining.</p><button @click="drawer=''" style="border:0;background:#27836a;color:#fff;padding:10px 14px;border-radius:5px;font:600 11px 'DM Sans';cursor:pointer">Mark as reviewed</button></div></aside></div>
+	<div class="drawer" v-if="drawer" @click.self="drawer=''" role="dialog"><aside class="drawer-card"><button class="close" @click="drawer=''" aria-label="Close">×</button><div class="eyebrow">{{drawerTitle}}</div><h2>{{drawerHeading}}</h2><p style="color:#71847e;font-size:12px;line-height:1.6">{{drawerPersonaText}}</p><div class="panel" style="margin-top:24px;background:#f7faf8"><div class="kpi-label">RECOMMENDED NEXT STEP</div><h3 style="font-size:15px;margin:10px 0">{{drawerNextStepTitle}}</h3><p style="color:#71847e;font-size:11px">{{drawerNextStepText}}</p><div class="drawer-actions"><button class="drawer-btn primary" @click="goNow">Go now</button><button class="drawer-btn secondary" @click="drawer=''">Mark as reviewed</button></div></div></aside></div>
 </div></div>
 <script src="https://unpkg.com/vue@3.5.13/dist/vue.global.prod.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -334,16 +340,45 @@ createApp({ setup() {
 		marginChartInstance.data.datasets[0].data=marginSeries.value.map(item=>item.margin);
 		marginChartInstance.update();
 	}
-	const drawerTitle=computed(()=>drawer.value==='stockout'?'Urgent inventory':drawer.value==='sales'?'Sales signal':drawer.value==='vendor'?'Vendor alert':drawer.value==='seasonal'?'Seasonal opportunity':'Category detail'); const drawerHeading=computed(()=>drawer.value==='stockout'?'Stockout risks':drawer.value==='seasonal' ? (selected.value?.event || 'Seasonal action') : 'Review the latest category signal');
+	const drawerTitle=computed(()=>drawer.value==='stockout'?'Urgent inventory':drawer.value==='sales'?'Sales signal':drawer.value==='vendor'?'Vendor alert':drawer.value==='seasonal'?'Seasonal opportunity':drawer.value==='product'?'Product deep dive':'Category detail');
+	const drawerHeading=computed(()=>drawer.value==='stockout'?'Stockout risks':drawer.value==='sales'?'Sales trend decline':drawer.value==='vendor'?'Vendor fulfillment risk':drawer.value==='seasonal' ? (selected.value?.event || 'Seasonal action') :drawer.value==='product' ? (selected.value?.name || 'Product detail') : 'Review the latest category signal');
+	const drawerPersonaText=computed(()=>{
+		if(drawer.value==='stockout') return 'Your highest-risk SKUs are approaching shelf-out before the next routine delivery. Prioritize immediate replenishment on items with the fastest velocity and confirm allocation with the vendor before cutoff.';
+		if(drawer.value==='sales') return 'Demand is softening in this segment while other subcategories are growing. Use this view to decide whether to adjust promo depth, improve placement, or rebalance inventory toward stronger movers.';
+		if(drawer.value==='vendor') return 'Delivery reliability is now a service-level risk for this category. Protect availability by escalating delayed POs, confirming revised ETAs, and shifting urgent volume to backup suppliers where needed.';
+		if(drawer.value==='seasonal') return `Seasonal demand is building around ${selected.value?.event || 'this event'}. Act early to lock inventory, secure display space, and prevent late-cycle stockouts during peak traffic.`;
+		if(drawer.value==='product') return `${selected.value?.name || 'This product'} is materially influencing category results in the selected view. Use this signal to refine order quantities, protect margin, and align facings to local demand by store.`;
+		if(drawer.value==='inventory') return 'These items are nearing their reorder point. Review minimum presentation levels and expected sell-through so your next PO protects availability without creating excess carry cost.';
+		return 'Use this action panel to translate the latest category signal into a concrete buyer decision for the next order cycle.';
+	});
+	const drawerNextStepTitle=computed(()=>{
+		if(drawer.value==='stockout') return 'Issue an expedited replenishment PO';
+		if(drawer.value==='sales') return 'Launch a targeted sales recovery plan';
+		if(drawer.value==='vendor') return 'Escalate delayed vendor orders';
+		if(drawer.value==='seasonal') return 'Execute the seasonal prep playbook';
+		if(drawer.value==='product') return 'Tune item-level forecast and facings';
+		if(drawer.value==='inventory') return 'Approve priority reorder list';
+		return 'Confirm and log next buyer action';
+	});
+	const drawerNextStepText=computed(()=>{
+		if(drawer.value==='stockout') return 'Create or amend a purchase order for SKUs under 4 days of supply and request confirmed ship windows from each vendor.';
+		if(drawer.value==='sales') return 'Select two underperforming SKUs, add short-term promo support, and re-check unit velocity in the next 7 days.';
+		if(drawer.value==='vendor') return 'Contact the vendor on delayed POs, document committed delivery dates, and reallocate any at-risk quantities to alternative sources.';
+		if(drawer.value==='seasonal') return selected.value?.action || 'Follow the recommended seasonal preparation action for this event.';
+		if(drawer.value==='product') return `Update next order quantities for ${selected.value?.name || 'the selected product'} using current growth, days of supply, and store-level sell-through.`;
+		if(drawer.value==='inventory') return 'Approve reorder quantities for the most constrained SKUs and schedule an inventory check before the next order cutoff.';
+		return 'Capture the decision and assign ownership for follow-through.';
+	});
 	function openDrawer(value){drawer.value=value} function openProduct(product){selected.value=product; drawer.value='product'}
 	function takeSeasonalAction(signal){ selected.value=signal; drawer.value='seasonal'; }
+	function goNow(){ drawer.value=''; }
 	onMounted(()=>{
 		salesChartInstance=new Chart(document.getElementById('salesChart'),{type:'line',data:{labels:salesSeries.value.labels,datasets:[{data:salesSeries.value.revenue,borderColor:'#27836a',backgroundColor:'#dff2e9',fill:true,tension:.4,pointRadius:3,pointBackgroundColor:'#27836a'},{data:salesSeries.value.target,borderColor:'#9acdb6',borderDash:[4,4],pointRadius:0,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#eef3f0'},ticks:{callback:v=>'$'+v+'k',font:{size:10},color:'#71847e'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:10},color:'#71847e'},border:{display:false}}}}});
 		marginChartInstance=new Chart(document.getElementById('marginChart'),{type:'bar',data:{labels:marginSeries.value.map(item=>item.label),datasets:[{data:marginSeries.value.map(item=>item.margin),backgroundColor:['#27836a','#66a98f','#8fc7b1','#aed8c6','#e9a08f'],borderRadius:3,barThickness:20}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:50,ticks:{callback:v=>v+'%',font:{size:9},color:'#71847e'},grid:{color:'#eef3f0'},border:{display:false}},x:{grid:{display:false},ticks:{font:{size:9},color:'#71847e'},border:{display:false}}}}});
 		refreshCharts();
 	});
 	watch(filteredRecords, refreshCharts, {deep:true});
-	return {filters,drawer,selected,reorderItems,supplyBars,products,brands,lowMargin,vendors,drawerTitle,drawerHeading,openDrawer,openProduct,takeSeasonalAction,kpis,inventorySummary,salesSummary,fastestGrowingProducts,trendInventoryRisk,seasonalDemandSignals};
+	return {filters,drawer,selected,reorderItems,supplyBars,products,brands,lowMargin,vendors,drawerTitle,drawerHeading,drawerPersonaText,drawerNextStepTitle,drawerNextStepText,openDrawer,openProduct,takeSeasonalAction,goNow,kpis,inventorySummary,salesSummary,fastestGrowingProducts,trendInventoryRisk,seasonalDemandSignals};
 }}).mount('#app');
 </script>
 </body>
